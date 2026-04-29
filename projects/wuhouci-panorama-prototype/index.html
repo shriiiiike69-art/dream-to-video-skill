@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>武侯祠数字漫游（原型）</title>
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <div id="app">
+      <div id="viewer"></div>
+
+      <header class="topbar glass">
+        <div class="brand">
+          <div class="brand-badge">720</div>
+          <div>
+            <h1 id="sceneTitle">武侯祠数字漫游</h1>
+            <p id="sceneSubtitle">仿 720yun 网站结构的静态原型</p>
+          </div>
+        </div>
+        <button id="introBtn" class="ghost-btn">简介</button>
+      </header>
+
+      <aside class="right-toolbar glass">
+        <button class="tool-btn" id="zoomInBtn" title="放大">＋</button>
+        <button class="tool-btn" id="zoomOutBtn" title="缩小">－</button>
+        <button class="tool-btn" id="autoRotateBtn" title="自动旋转">⟳</button>
+        <button class="tool-btn" id="fullscreenBtn" title="全屏">⛶</button>
+        <button class="tool-btn" id="resetBtn" title="重置视角">⌂</button>
+      </aside>
+
+      <section class="mini-map glass">
+        <div class="mini-map__header">
+          <span>导览点位</span>
+          <button id="toggleMapBtn" class="mini-map__toggle">隐藏</button>
+        </div>
+        <div class="mini-map__canvas" id="mapCanvas">
+          <img id="mapImage" src="./assets/map/site-map.png" alt="场馆导览地图" onerror="this.style.display='none'" />
+          <div class="mini-map__fallback" id="mapFallback">把平面导览图放进 assets/map/site-map.png</div>
+          <div id="mapPoints"></div>
+        </div>
+      </section>
+
+      <section class="scene-strip glass">
+        <div class="scene-strip__label">场景选择</div>
+        <div class="scene-strip__list" id="sceneList"></div>
+      </section>
+
+      <div class="modal-backdrop hidden" id="introModal">
+        <div class="modal glass">
+          <div class="modal__head">
+            <h2>项目简介</h2>
+            <button id="closeIntroBtn" class="ghost-btn">关闭</button>
+          </div>
+          <div class="modal__body">
+            <p>
+              这是一个仿照 720yun 导览站结构搭建的前端原型，包含：全景主视图、底部缩略图切换、右侧工具栏、
+              小地图点位和简介弹窗。
+            </p>
+            <p>
+              你后续只需要替换 <code>assets/panos/</code> 里的全景图、<code>assets/thumbs/</code>
+              里的缩略图，以及 <code>script.js</code> 顶部的场景配置，就能继续扩展成自己的武侯祠项目。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.js"></script>
+    <script src="./script.js"></script>
+  </body>
+</html>
