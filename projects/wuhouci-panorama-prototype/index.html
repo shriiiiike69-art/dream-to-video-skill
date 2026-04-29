@@ -3,66 +3,112 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>武侯祠数字漫游（原型）</title>
+    <title>武侯祠数字漫游</title>
     <link rel="preconnect" href="https://cdn.jsdelivr.net" />
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/pannellum@2.5.6/build/pannellum.css" />
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
     <div id="app">
-      <div id="viewer"></div>
+      <div id="viewerPano" class="viewer-layer"></div>
+      <div id="viewerFallback" class="viewer-layer viewer-fallback hidden">
+        <img id="fallbackImage" alt="场景背景图" />
+        <div class="viewer-fallback__mask"></div>
+      </div>
 
       <header class="topbar glass">
         <div class="brand">
           <div class="brand-badge">720</div>
           <div>
             <h1 id="sceneTitle">武侯祠数字漫游</h1>
-            <p id="sceneSubtitle">仿 720yun 网站结构的静态原型</p>
+            <p id="sceneSubtitle">仿 720yun 导览结构 · 水彩版项目原型</p>
           </div>
         </div>
-        <button id="introBtn" class="ghost-btn">简介</button>
+        <div class="topbar__actions">
+          <span class="hint-chip">支持全景图 / 普通图片双模式</span>
+          <button id="enterSiteBtn" class="primary-btn">进入网站</button>
+        </div>
       </header>
 
-      <aside class="right-toolbar glass">
-        <button class="tool-btn" id="zoomInBtn" title="放大">＋</button>
-        <button class="tool-btn" id="zoomOutBtn" title="缩小">－</button>
-        <button class="tool-btn" id="autoRotateBtn" title="自动旋转">⟳</button>
-        <button class="tool-btn" id="fullscreenBtn" title="全屏">⛶</button>
-        <button class="tool-btn" id="resetBtn" title="重置视角">⌂</button>
+      <aside class="control-dock glass">
+        <div class="dock-group dock-group--vertical">
+          <button class="tool-btn" id="sceneToggleBtn" title="场景列表">景</button>
+          <button class="tool-btn" id="mapToggleBtn" title="点位地图">图</button>
+          <button class="tool-btn" id="infoToggleBtn" title="场景简介">i</button>
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <div class="dock-group dock-group--vertical">
+          <button class="tool-btn" id="zoomInBtn" title="放大">＋</button>
+          <button class="tool-btn" id="zoomOutBtn" title="缩小">－</button>
+          <button class="tool-btn" id="resetBtn" title="重置">⌂</button>
+          <button class="tool-btn" id="fullscreenBtn" title="全屏">⛶</button>
+        </div>
+
+        <div class="dock-divider"></div>
+
+        <div class="dock-group dock-group--vertical">
+          <button class="tool-btn" id="autoRotateBtn" title="自动导览">▶</button>
+          <button class="tool-btn" id="pauseRotateBtn" title="暂停导览">❚❚</button>
+        </div>
       </aside>
 
-      <section class="mini-map glass">
-        <div class="mini-map__header">
-          <span>导览点位</span>
-          <button id="toggleMapBtn" class="mini-map__toggle">隐藏</button>
+      <section class="mode-panel glass">
+        <div class="panel-title">视图模式</div>
+        <div class="mode-buttons">
+          <button class="mode-btn active" data-mode="normal">正常</button>
+          <button class="mode-btn" data-mode="fisheye">鱼眼</button>
+          <button class="mode-btn" data-mode="planet">小行星</button>
         </div>
-        <div class="mini-map__canvas" id="mapCanvas">
-          <img id="mapImage" src="./assets/map/site-map.png" alt="场馆导览地图" onerror="this.style.display='none'" />
-          <div class="mini-map__fallback" id="mapFallback">把平面导览图放进 assets/map/site-map.png</div>
+      </section>
+
+      <section class="map-panel glass" id="mapPanel">
+        <div class="panel-head">
+          <span>导览点位</span>
+          <button class="ghost-btn" id="closeMapBtn">收起</button>
+        </div>
+        <div class="map-canvas">
+          <img id="mapImage" src="./assets/map/site-map.svg" alt="武侯祠导览图" />
           <div id="mapPoints"></div>
         </div>
       </section>
 
-      <section class="scene-strip glass">
-        <div class="scene-strip__label">场景选择</div>
+      <aside class="info-panel glass hidden" id="infoPanel">
+        <div class="panel-head">
+          <span>场景详情</span>
+          <button class="ghost-btn" id="closeInfoBtn">关闭</button>
+        </div>
+        <h3 id="infoTitle">武侯祠</h3>
+        <p id="infoText">这里会显示当前场景的介绍、拍摄说明或文博解说。</p>
+        <div class="info-meta">
+          <div><span>素材模式</span><strong id="assetModeText">普通图片</strong></div>
+          <div><span>推荐补图</span><strong id="shotHintText">前 / 左 / 右 / 回看</strong></div>
+        </div>
+      </aside>
+
+      <section class="scene-strip glass" id="sceneStrip">
+        <div class="panel-head panel-head--compact">
+          <span>场景选择</span>
+          <button class="ghost-btn" id="closeSceneStripBtn">隐藏</button>
+        </div>
         <div class="scene-strip__list" id="sceneList"></div>
       </section>
 
-      <div class="modal-backdrop hidden" id="introModal">
+      <div class="modal-backdrop hidden" id="guideModal">
         <div class="modal glass">
-          <div class="modal__head">
-            <h2>项目简介</h2>
-            <button id="closeIntroBtn" class="ghost-btn">关闭</button>
+          <div class="panel-head">
+            <span>接下来怎么加图</span>
+            <button class="ghost-btn" id="closeGuideBtn">关闭</button>
           </div>
           <div class="modal__body">
-            <p>
-              这是一个仿照 720yun 导览站结构搭建的前端原型，包含：全景主视图、底部缩略图切换、右侧工具栏、
-              小地图点位和简介弹窗。
-            </p>
-            <p>
-              你后续只需要替换 <code>assets/panos/</code> 里的全景图、<code>assets/thumbs/</code>
-              里的缩略图，以及 <code>script.js</code> 顶部的场景配置，就能继续扩展成自己的武侯祠项目。
-            </p>
+            <ol>
+              <li>把 360 全景图放进 <code>assets/panos/</code>。</li>
+              <li>把普通水彩图或广角图也放进 <code>assets/panos/</code>，并把对应场景的 <code>type</code> 改成 <code>flat</code>。</li>
+              <li>把缩略图放进 <code>assets/thumbs/</code>。</li>
+              <li>把平面导览图放进 <code>assets/map/site-map.svg</code> 或 <code>site-map.png</code>。</li>
+              <li>在 <code>script.js</code> 顶部的 <code>SCENES</code> 数组里替换路径、简介和地图坐标。</li>
+            </ol>
           </div>
         </div>
       </div>
